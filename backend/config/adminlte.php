@@ -349,6 +349,11 @@ return [
             'icon' => 'fas fa-fw fa-user',
         ],
         [
+            'text' => 'roles',
+            'url' => 'roles',
+            'icon' => 'fas fa-fw fa-user',
+        ],
+        [
             'text' => 'multilevel',
             'icon' => 'fas fa-fw fa-share',
             'submenu' => [

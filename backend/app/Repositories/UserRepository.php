@@ -6,12 +6,14 @@ use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
 use App\Common\Constant;
 use App\Models\Role;
+
 class UserRepository implements UserRepositoryInterface
 {
     public function find($id)
     {
-        return User::findOrFail($id);
+        return User::find($id);
     }
+
     public function all()
     {
         return User::all();
@@ -27,24 +29,31 @@ class UserRepository implements UserRepositoryInterface
 
     public function update($id, array $data)
     {
-        $user = User::findOrFail($id);
-        $user->update($data);
-
-        return $user->fresh();
+        $user = User::find($id);
+        if ($user) {
+            $user->update($data);
+            return $user;
+        }
+        return null;
     }
 
     public function delete($id)
     {
-        return User::destroy($id);
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            return true;
+        }
+        return false;
     }
 
     public function searchByName($name)
     {
-        return User::where('name', 'like', '%' . $name . '%');
+        return User::where('name', 'like', '%' . $name . '%')->get();
     }
 
-    public function findEmail($email){
-        return User::where('email', '=', $email)->first();
+    public function findEmail($email)
+    {
+        return User::where('email', $email)->first();
     }
-
 }

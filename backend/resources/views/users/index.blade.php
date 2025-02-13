@@ -4,8 +4,8 @@
 
 @section('css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.css">
-    
 @stop
+
 @section('content_header')
     <h1>User Management</h1>
 @stop
@@ -37,11 +37,12 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>id</th>
+                                <th>#</th>
                                 <th>Name</th>
-                                <th>first_name</th>
-                                <th>last_name</th>
                                 <th>Email</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Role</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -49,13 +50,14 @@
                             @foreach ($users as $user)
                                 <tr>
                                     <td>{{ $user->id }}</td>
-                                    <td>{{ $user->first_name }}</td>
-                                    <td>{{ $user->last_name }}</td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
+                                    <td>{{ $user->first_name }}</td>
+                                    <td>{{ $user->last_name }}</td>
+                                    <td>{{ $user->role ? $user->role->name : 'N/A' }}</td>
                                     <td>
                                         <!-- Edit Button -->
-                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editUserModal" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}">
+                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editUserModal" data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}" data-first-name="{{ $user->first_name }}" data-last-name="{{ $user->last_name }}" data-role-id="{{ $user->role_id }}">
                                             <i class="fas fa-pen"></i> Edit
                                         </button>
 
@@ -77,7 +79,6 @@
             <div class="d-flex justify-content-center mt-3">
                 {{ $users->links() }} <!-- Tự động hiển thị phân trang -->
             </div>
-            <!-- Pagination -->
         </div>
     </div>
 
@@ -105,13 +106,31 @@
                             <small class="text-danger" id="error-email"></small>
                         </div>
                         <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" name="first_name" id="first_name" required>
+                            <small class="text-danger" id="error-first_name"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" name="last_name" id="last_name" required>
+                            <small class="text-danger" id="error-last_name"></small>
+                        </div>
+                        <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" class="form-control" name="password" id="password" required>
                             <small class="text-danger" id="error-password"></small>
                         </div>
                         <div class="form-group">
-                            <label for="edit_confirm_password">Confirm Password</label>
+                            <label for="password_confirmation">Confirm Password</label>
                             <input type="password" class="form-control" name="password_confirmation" id="password_confirmation">
+                        </div>
+                        <div class="form-group">
+                            <label for="role_id">Role</label>
+                            <select class="form-control" name="role_id" id="role_id">
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -119,7 +138,6 @@
                         <button type="submit" class="btn btn-primary">Save User</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
@@ -141,18 +159,40 @@
                         <div class="form-group">
                             <label for="edit_name">Name</label>
                             <input type="text" class="form-control" name="name" id="edit_name" required>
+                            <small class="text-danger" id="error-edit-name"></small>
                         </div>
                         <div class="form-group">
                             <label for="edit_email">Email</label>
                             <input type="email" class="form-control" name="email" id="edit_email" required>
+                            <small class="text-danger" id="error-edit-email"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_first_name">First Name</label>
+                            <input type="text" class="form-control" name="first_name" id="edit_first_name" required>
+                            <small class="text-danger" id="error-edit-first_name"></small>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_last_name">Last Name</label>
+                            <input type="text" class="form-control" name="last_name" id="edit_last_name" required>
+                            <small class="text-danger" id="error-edit-last_name"></small>
                         </div>
                         <div class="form-group">
                             <label for="edit_password">Password</label>
                             <input type="password" class="form-control" name="password" id="edit_password">
+                            <small class="text-danger" id="error-edit-password"></small>
                         </div>
-                        <div class="form-group
-                            <label for="edit_confirm_password">Confirm Password</label>
+                        <div class="form-group">
+                            <label for="edit_password_confirmation">Confirm Password</label>
                             <input type="password" class="form-control" name="password_confirmation" id="edit_password_confirmation">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_role_id">Role</label>
+                            <select class="form-control" name="role_id" id="edit_role_id">
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -164,10 +204,9 @@
     </div>
 @stop
 
-
 @section('js')
 <script>
-    //AJAX SEARCH
+    // AJAX SEARCH
     $(document).ready(function () {
         $('#searchButton').on('click', function () {
             var query = $('#searchInput').val();
@@ -184,11 +223,12 @@
                                 <tr>
                                     <td>${user.id}</td>
                                     <td>${user.name}</td>
+                                    <td>${user.email}</td>
                                     <td>${user.first_name}</td>
                                     <td>${user.last_name}</td>
-                                    <td>${user.email}</td>
+                                    <td>${user.role ? user.role.name : 'N/A'}</td>
                                     <td>
-                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editUserModal" data-id="${user.id}" data-name="${user.name}" data-email="${user.email}">
+                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editUserModal" data-id="${user.id}" data-name="${user.name}" data-email="${user.email}" data-first-name="${user.first_name}" data-last-name="${user.last_name}" data-role-id="${user.role_id}">
                                             <i class="fas fa-pen"></i> Edit
                                         </button>
                                         <button class="btn btn-danger btn-sm delete-user" data-id="${user.id}">
@@ -201,7 +241,7 @@
 
                         $('table tbody').html(usersHtml);
                     } else {
-                        $('table tbody').html('<tr><td colspan="4" class="text-center">No users found.</td></tr>');
+                        $('table tbody').html('<tr><td colspan="7" class="text-center">No users found.</td></tr>');
                     }
                 },
                 error: function (xhr) {
@@ -209,12 +249,8 @@
                 }
             });
         });
-    });
 
-//------------------------------------------------------------------//
-
-    //AJAX ADD
-    $(document).ready(function () {
+        // AJAX ADD
         $('#addUserForm').off('submit').on('submit', function (e) {
             e.preventDefault();
 
@@ -233,156 +269,126 @@
                                 <td>${response.user.id}</td>
                                 <td>${response.user.name}</td>
                                 <td>${response.user.email}</td>
+                                <td>${response.user.first_name}</td>
+                                <td>${response.user.last_name}</td>
+                                <td>${response.user.role ? response.user.role.name : 'N/A'}</td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editUserModal" data-id="${response.user.id}" data-name="${response.user.name}" data-email="${response.user.email}">
+                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editUserModal" data-id="${response.user.id}" data-name="${response.user.name}" data-email="${response.user.email}" data-first-name="${response.user.first_name}" data-last-name="${response.user.last_name}" data-role-id="${response.user.role_id}">
                                         <i class="fas fa-pen"></i> Edit
                                     </button>
-                                    <form action="/users/${response.user.id}" method="POST" style="display:inline;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="${$('meta[name="csrf-token"]').attr('content')}">
-                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">
-                                            <i class="fas fa-trash"></i> Delete
-                                        </button>
-                                    </form>
+                                    <button class="btn btn-danger btn-sm delete-user" data-id="${response.user.id}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        $('table tbody').append(newUserRow);
+                    } else {
+                        // Hiển thị thông báo lỗi
+                        if (response.errors) {
+                            if (response.errors.email) {
+                                $('#error-email').text(response.errors.email[0]);
+                            }
+                            if (response.errors.password) {
+                                $('#error-password').text(response.errors.password[0]);
+                            }
+                        } else {
+                            alert('Error occurred while adding user.');
+                        }
+                    }
+                },
+                error: function (xhr) {
+                    alert('Something went wrong!');
+                }
+            });
+        });
+
+        // Populating Edit User Modal
+        $('#editUserModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var userId = button.data('id'); // Extract the user ID
+            var name = button.data('name'); // Extract user data
+            var email = button.data('email');
+            var firstName = button.data('first-name');
+            var lastName = button.data('last-name');
+            var roleId = button.data('role-id');
+
+            var modal = $(this);
+            modal.find('#edit_name').val(name);
+            modal.find('#edit_email').val(email);
+            modal.find('#edit_first_name').val(firstName);
+            modal.find('#edit_last_name').val(lastName);
+            modal.find('#edit_role_id').val(roleId);
+
+            // Update the form action to use the correct user ID
+            var actionUrl = "{{ route('users.update', ':id') }}".replace(':id', userId);
+            modal.find('form').attr('action', actionUrl);
+        });
+
+        // AJAX UPDATE USER
+        $('#editUserForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            var form = $(this);
+            var actionUrl = form.attr('action');
+            var formData = form.serialize(); // Get form data
+
+            $.ajax({
+                url: actionUrl,
+                method: "PUT", // PUT to update the data
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+
+                        // Close the modal
+                        $('#editUserModal').modal('hide');
+
+                        // Update the row in the table
+                        var updatedUserRow = `
+                            <tr data-id="${response.user.id}">
+                                <td>${response.user.id}</td>
+                                <td>${response.user.name}</td>
+                                <td>${response.user.email}</td>
+                                <td>${response.user.first_name}</td>
+                                <td>${response.user.last_name}</td>
+                                <td>${response.user.role ? response.user.role.name : 'N/A'}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editUserModal" data-id="${response.user.id}" data-name="${response.user.name}" data-email="${response.user.email}" data-first-name="${response.user.first_name}" data-last-name="${response.user.last_name}" data-role-id="${response.user.role_id}">
+                                        <i class="fas fa-pen"></i> Edit
+                                    </button>
+                                    <button class="btn btn-danger btn-sm delete-user" data-id="${response.user.id}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
                                 </td>
                             </tr>
                         `;
 
-                        $('table tbody').append(newUserRow);
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function (response) {
-                    if (response.status === 422) {
-                        let errors = response.responseJSON.errors;
-                        let errorMessage = 'Validation Errors:\n';
-                        $.each(errors, function (key, value) {
-                            errorMessage += '- ' + value[0] + '\n';
+                        // Find and replace the old row with the new one using data-id
+                        $('table tbody tr').each(function() {
+                            if ($(this).data('id') == response.user.id) {
+                                $(this).replaceWith(updatedUserRow);
+                            }
                         });
-                        alert(errorMessage);
                     } else {
-                        alert('');
-                        console.log(response);
+                        // Hiển thị thông báo lỗi
+                        if (response.errors) {
+                            if (response.errors.email) {
+                                $('#error-edit-email').text(response.errors.email[0]);
+                            }
+                            if (response.errors.password) {
+                                $('#error-edit-password').text(response.errors.password[0]);
+                            }
+                        } else {
+                            alert('Cập nhật người dùng thất bại: ' + response.message);
+                        }
                     }
+                },
+                error: function(xhr) {
+                    alert('Có lỗi xảy ra: ' + xhr.responseText);
                 }
             });
         });
     });
-//------------------------------------------------------------------//
-
-$(document).ready(function () {
-    // Khi mở modal chỉnh sửa
-    $('#editUserModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var userId = button.data('id');
-        var userName = button.data('name');
-        var userEmail = button.data('email');
-        var userlastname = button.data('last_name');
-        var userfirstname = button.data('first_name');
-
-        var modal = $(this);
-        modal.find('#edit_name').val(userName);
-        modal.find('#edit_email').val(userEmail);
-
-        var formAction = '/users/' + userId; // Laravel resourceful routes
-        modal.find('form').attr('action', formAction);
-    });
-
-    // AJAX cập nhật người dùng
-    $('#editUserForm').on('submit', function (e) {
-        e.preventDefault();
-
-        $.ajax({
-            url: $(this).attr('action'),
-            method: 'POST', // Laravel nhận dạng qua _method
-            data: $(this).serialize(),
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token
-            },
-            xhrFields: {
-                withCredentials: true // Giữ session
-            },
-            success: function (response) {
-                if (response.success && response.user) {
-                    alert(response.message);
-                    $('#editUserModal').modal('hide');
-
-                    let updatedRow = `
-                        <tr>
-                            <td>${response.user.id}</td>
-                            <td>${response.user.name}</td>
-                            <td>${response.user.email}</td>
-                            <td>${response.user.first_name}</td>
-                            <td>${response.user.last_name}</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editUserModal"
-                                    data-id="${response.user.id}" data-name="${response.user.name}" data-email="${response.user.email}" data-first_name="${response.user.first_name}" data-last_name="${response.user.last_name}">
-                                    <i class="fas fa-pen"></i> Edit
-                                </button>
-                                <button class="btn btn-danger btn-sm delete-user" data-id="${response.user.id}">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-
-                    let row = $('table tbody').find(`button[data-id="${response.user.id}"]`).closest('tr');
-                    if (row.length) {
-                        row.replaceWith(updatedRow);
-                    } else {
-                        $('table tbody').append(updatedRow);
-                    }
-                } else {
-                    alert('Lỗi: ' + response.message);
-                }
-            },
-            error: function (xhr) {
-                let errorMessage = 'Có lỗi xảy ra!';
-                if (xhr.status === 422 && xhr.responseJSON.errors) {
-                    errorMessage = Object.values(xhr.responseJSON.errors).flat().join('\n');
-                } else if (xhr.responseJSON?.message) {
-                    errorMessage = xhr.responseJSON.message;
-                }
-                alert(errorMessage);
-            }
-        });
-    });
-
-    //------------------------------------------------------------------//
-    // AJAX Xóa người dùng
-    $(document).on('click', '.delete-user', function (e) {
-        e.preventDefault();
-
-        var userId = $(this).data('id');
-        var deleteUrl = '/users/' + userId;
-
-        if (confirm('Bạn có chắc muốn xóa người dùng này không?')) {
-            $.ajax({
-                url: deleteUrl,
-                type: 'POST', // Laravel nhận dạng qua _method
-                data: {
-                    _method: 'DELETE',
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: function (response) {
-                    if (response.success) {
-                        alert(response.success);
-                        $('table tbody').find(`button[data-id="${userId}"]`).closest('tr').remove();
-                    } else {
-                        alert('Lỗi: ' + response.error);
-                    }
-                },
-                error: function (xhr) {
-                    alert('Không thể xóa người dùng.');
-                }
-            });
-        }
-    });
-});
-
 </script>
 @stop

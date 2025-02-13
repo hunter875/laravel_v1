@@ -2,7 +2,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\ValidEmailExtension;
 
 class UserRequest extends FormRequest
 {
@@ -13,12 +12,15 @@ class UserRequest extends FormRequest
 
     public function rules()
     {
+        $userId = $this->route('user'); // Lấy ID của người dùng từ route
+
         return [
             'name' => 'required|string|max:255',
-            'email' => ['required', 'email', new ValidEmailExtension()],  // Sử dụng ValidEmailExtension ở đây
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
+            'password' => 'nullable|string|min:8|confirmed',
             'first_name' => 'nullable|string|max:255',
             'last_name' => 'nullable|string|max:255',
+            'role_id' => 'nullable|exists:roles,id',
         ];
     }
     

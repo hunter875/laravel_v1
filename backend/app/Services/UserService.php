@@ -33,31 +33,33 @@ class UserService
     }
 
     public function create(array $data)
-{
-    try {
-        if (!isset($data['role_id'])) {
-            $data['role_id'] = 2;
+    {
+        try {
+            $data['role_id'] = $data['role_id'] ?? 2; // Gọn hơn
+    
+            return $this->userRepository->create($data);
+        } catch (\Throwable $e) { // Bắt cả Error và Exception
+            report($e); // Laravel sẽ tự ghi log
+            return response()->json(['error' => 'User creation failed'], 500);
         }
-
-        return $this->userRepository->create($data);
-    } catch (\Exception $e) {
-        \Log::error('User creation failed: ' . $e->getMessage());
-        return null;
     }
-}
+    
 
 
-    public function update(UserRequest $request, $id)
-{
-    $data = $request->validated();
-    $user = $this->userService->update($id, $data);
-
-    if (!$user) {
-        return back()->with('error', trans('msg.update_failed'));
+  
+    public function update($id, array $data)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return null; // Nếu không tìm thấy người dùng, trả về null
+        }
+    
+        // Cập nhật thông tin người dùng
+        $user->update($data);
+    
+        return $user; // Trả về người dùng đã được cập nhật
     }
-
-    return redirect()->route('users.index')->with('success', trans('msg.updated'));
-}
+    
 
     
 
@@ -66,10 +68,17 @@ class UserService
         return $this->userRepository->delete($id);
     }
 
-    public function searchByName($name){
-        Log::info($name);
-        return $this->userRepository->searchByName($name)->paginate(Constant::PAGINATE_DEFAULT);
-    }
+    public function searchByName(Request $request)
+{
+    $query = $request->input('search');
+    $users = User::where('name', 'like', '%' . $query . '%')->paginate(10); // Display 10 users per page
+
+    return response()->json([
+        'success' => true,
+        'users' => $users
+    ]);
+}
+
 
     public function findEmail($email){
         return $this->userRepository->findEmail($email);
@@ -82,5 +91,10 @@ class UserService
         $user->save();
         Mail::to($user->email)->send(new ResetPasswordMail($newPassword));
         return 'Đã gửi mật khẩu mới đến bạn';
+    }
+
+    public function find($id)
+    {
+        return $this->userRepository->find($id);
     }
 }
