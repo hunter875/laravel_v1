@@ -12,7 +12,7 @@
 
     <!-- Hiển thị avatar -->
     <div class="form-group text-center">
-        <img id="avatarPreview" src="{{ $user->avatar ? Storage::url($user->avatar) : asset('storage/avatars/default-avatar.png') }}" alt="Avatar" class="img-thumbnail rounded" style="width: 300px; height: 200px; object-fit: cover;">
+        <img id="avatarPreview" src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('storage/avatars/default-avatar.png') }}" alt="Avatar" class="img-thumbnail rounded" style="width: 300px; height: 200px; object-fit: cover;">
     </div>
 
     <!-- Form cập nhật thông tin người dùng -->

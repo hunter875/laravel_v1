@@ -10,17 +10,13 @@ class AdminPolicy
     use HandlesAuthorization;
 
     /**
-     * Create a new policy instance.
+     * Determine if the user can access admin functionalities.
      *
-     * @return void
+     * @param  \App\Models\User  $user
+     * @return bool
      */
-    public function __construct()
+    public function accessAdmin(User $user)
     {
-        //
-    }
-
-    public function AccessAdmin(User $user)
-    {
-        return $user->role_id === 1;
+        return $user->role_id === 1; // Assuming role_id 1 is for admin
     }
 }

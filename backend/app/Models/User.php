@@ -18,14 +18,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'first_name',
-        'last_name',
-        'avatar',
-        'role_id',
-        'last_login_at',
+        'name', 'email', 'first_name', 'last_name', 'role_id', 'avatar', 'password',
     ];
 
     /**
@@ -35,14 +28,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'first_name',
-        'last_name',
-        'email',
-        'avatar',
-        'role_id',
         'remember_token',
-        'created_at',
-        'last_login_at',
     ];
 
     /**
@@ -57,5 +43,10 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\RoleRepositoryInterface;
+use App\Models\User;
+
 
 class RoleController extends Controller
 {
@@ -16,6 +18,10 @@ class RoleController extends Controller
 
     public function index()
     {
+        if (!auth()->check() || !auth()->user()->can('AccessAdmin', User::class)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $roles = $this->roleRepository->all();
         return view('roles.index', compact('roles'));
     }

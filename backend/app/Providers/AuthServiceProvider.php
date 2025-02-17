@@ -30,7 +30,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         
-        // Định nghĩa thêm các Gate nếu cần
-        Gate::define('AccessAdmin', [AdminPolicy::class, 'view']);
+        // Define a gate for admin access
+        Gate::define('access-admin', [AdminPolicy::class, 'accessAdmin']);
     }
 }

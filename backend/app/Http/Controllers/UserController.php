@@ -2,90 +2,93 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
-use App\Services\UserService;
-use App\Exceptions\CustomException;
-use App\Models\User;
-use App\Models\Role; // Thêm dòng này để sử dụng model Role
-use Illuminate\Support\Facades\Log;
-use App\Constants\ErrorCode;
-use App\Constants\StatusCode;
 
 class UserController extends Controller
 {
-    protected $userService;
-
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
-
+    // Hiển thị danh sách user
     public function index()
     {
-        if (!auth()->check() || !auth()->user()->can('AccessAdmin', User::class)) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $users = $this->userService->getAllUsers();
-        $roles = Role::all(); // Lấy danh sách roles
-
+        $users = User::paginate(7);
+        $roles = Role::all();
         return view('users.index', compact('users', 'roles'));
     }
+    /**
+     * Hiển thị form thêm người dùng mới.
+     */
+    public function create()
+    {
+        $roles = Role::all();
+        return view('users.create', compact('roles'));
+    }
 
+    /**
+     * Lưu người dùng mới vào cơ sở dữ liệu.
+     */
     public function store(UserRequest $request)
     {
-        $data = $request->validated();
+        $validated = $request->validated();
 
-        $user = $this->userService->create($data);
-
-        return response()->json([
-            'success' => true,
-            'message' => trans('msg.created'),
-            'user' => $user
+        $user = User::create([
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
+            'password' => bcrypt($validated['password']),
+            'role_id'  => $request->role_id ?? 3, // Gán role_id mặc định nếu không có
         ]);
+
+        return redirect()->route('users.index')->with('success', 'User created successfully!');
     }
 
+    /**
+     * Hiển thị form chỉnh sửa người dùng.
+     */
+    public function edit($id)
+    {
+        $user  = User::findOrFail($id);
+        $roles = Role::all();
+        return view('users.edit', compact('user', 'roles'));
+    }
+
+    /**
+     * Cập nhật thông tin người dùng.
+     */
     public function update(UserRequest $request, $id)
     {
-        $data = $request->validated();
+        $user = User::findOrFail($id);
+        $validated = $request->validated();
 
-        $user = $this->userService->update($id, $data);
+        // Bỏ qua email nếu không thay đổi
+        if ($request->email === $user->email) {
+            unset($validated['email']);
+        }
 
-        return response()->json([
-            'success' => true,
-            'message' => trans('msg.updated'),
-            'user' => $user
-        ]);
+        // Nếu có mật khẩu mới thì mã hóa, nếu không thì bỏ qua
+        if ($request->filled('password')) {
+            $validated['password'] = bcrypt($request->password);
+        } else {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
 
+    /**
+     * Xóa người dùng (trừ Admin role_id = 1).
+     */
     public function destroy($id)
     {
-        $this->userService->delete($id);
+        $user = User::findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => trans('msg.deleted')
-        ]);
-    }
+        if ($user->role_id == 1) {
+            return redirect()->route('users.index')->with('error', 'Admin users cannot be deleted.');
+        }
 
-    public function searchByName(Request $request)
-    {
-        $name = $request->input('search');
-        $users = $this->userService->searchByName($name);
-
-        return response()->json([
-            'success' => true,
-            'users' => $users
-        ]);
-    }
-
-    public function show($id)
-    {
-        $user = $this->userService->find($id);
-        return response()->json([
-            'success' => true,
-            'user' => $user
-        ]);
+        $user->delete();
+        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }

@@ -38,7 +38,7 @@ class RoleRepository implements RoleRepositoryInterface
         $role = Role::find($id);
         if ($role) {
             // Kiểm tra xem role có tồn tại trong bảng users hoặc hotels không
-            if (User::where('role_id', $id)->exists() || Hotel::where('role_id', $id)->exists()) {
+            if (User::where('role_id', $id)->exists() || user::where('role_id', $id)->exists()) {
                 return false;
             }
             $role->delete();

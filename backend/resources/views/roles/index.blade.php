@@ -6,6 +6,7 @@
     <h1>Role Management</h1>
 @stop
 
+
 @section('content')
     <div class="row">
         <div class="col-12">
