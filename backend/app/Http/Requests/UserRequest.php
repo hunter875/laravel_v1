@@ -26,7 +26,7 @@ class UserRequest extends FormRequest
         $userId = is_object($user) ? $user->id : (is_numeric($user) ? $user : null);
     
         $rules = [
-            'name'       => ['required', 'string', 'max:255'],
+            'name'       => ['required', 'string', 'max:255', Rule::unique('users', 'name')->ignore($userId)],
             'email'      => [
                 'required',
                 'string',

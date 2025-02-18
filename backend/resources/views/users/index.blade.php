@@ -44,6 +44,7 @@
                                     <th>First Name</th>
                                     <th>Last Name</th>
                                     <th>Role</th>
+                                    <th>Last Login</th> <!-- Add Last Login column -->
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -56,6 +57,7 @@
                                         <td>{{ $user->first_name }}</td>
                                         <td>{{ $user->last_name }}</td>
                                         <td>{{ $roles->find($user->role_id)->name ?? 'N/A' }}</td>
+                                        <td>{{ $user->last_login ? $user->last_login->format('Y-m-d H:i:s') : 'Never' }}</td> <!-- Display Last Login -->
                                         <td>
                                             <!-- Edit Button -->
                                             <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-sm">
