@@ -43,7 +43,7 @@
         <div class="form-group">
             <label for="password">Password</label>
             <input type="password" name="password" id="password" class="form-control" placeholder="Nếu muốn đổi mật khẩu hãy nhập vào">
-        </div>
+        </div> @error('password') <small class="text-danger">{{ $message }}</small> @enderror
 
         <div class="form-group">
             <label for="avatar">Avatar</label>

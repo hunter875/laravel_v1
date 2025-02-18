@@ -27,36 +27,50 @@ class ProfileController extends Controller
     }
 
     public function update(ProfileRequest $request)
-{
-    $user = Auth::user();
-    $validatedData = $request->validated();
-
-    // Dữ liệu cần cập nhật
-    $updateData = [
-        'name' => $validatedData['name'],
-        'email' => $validatedData['email'],
-        'first_name' => $validatedData['first_name'],
-        'last_name' => $validatedData['last_name'],
-    ];
-
-    if (!empty($validatedData['password'])) {
-        $updateData['password'] = Hash::make($validatedData['password']);
-    }
-
-    // Xử lý avatar nếu có
-    if ($request->hasFile('avatar')) {
-        // Xóa avatar cũ nếu có
-        if ($user->avatar) {
-            Storage::disk('public')->delete($user->avatar);
+    {
+        $user = Auth::user();
+        $validatedData = $request->validated();
+    
+        $updateData = [
+            'name' => $validatedData['name'],
+        ];
+    
+        // Chỉ cập nhật email nếu có thay đổi
+        if ($validatedData['email'] !== $user->email) {
+            $updateData['email'] = $validatedData['email'];
         }
-
-        $updateData['avatar'] = $request->file('avatar')->store('avatars', 'public');
+    
+        // Kiểm tra và cập nhật first_name, last_name nếu tồn tại
+        if (isset($validatedData['first_name'])) {
+            $updateData['first_name'] = $validatedData['first_name'];
+        }
+    
+        if (isset($validatedData['last_name'])) {
+            $updateData['last_name'] = $validatedData['last_name'];
+        }
+    
+        // Cập nhật mật khẩu nếu có
+        if (!empty($validatedData['password'])) {
+            $updateData['password'] = Hash::make($validatedData['password']);
+        }
+    
+        // Xử lý avatar
+        if ($request->hasFile('avatar')) {
+            if (!empty($user->avatar) && Storage::disk('public')->exists($user->avatar)) {
+                Storage::disk('public')->delete($user->avatar);
+            }
+    
+            $updateData['avatar'] = $request->file('avatar')->store('avatars', 'public');
+        }
+    
+        try {
+            $user->update($updateData);
+            return redirect()->route('profile.index')->with('success', 'Profile updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Profile update failed: ' . $e->getMessage());
+            return redirect()->route('profile.index')->with('error', 'Failed to update profile.');
+        }
     }
-
-    // Cập nhật thông tin người dùng
-    $user->update($updateData);
-
-    return redirect()->route('profile.index')->with('success', 'Profile updated successfully!');
-}
+    
 
 }

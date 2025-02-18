@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -16,6 +17,7 @@ class UserController extends Controller
         $roles = Role::all();
         return view('users.index', compact('users', 'roles'));
     }
+
     /**
      * Hiển thị form thêm người dùng mới.
      */
@@ -32,12 +34,7 @@ class UserController extends Controller
     {
         $validated = $request->validated();
 
-        $user = User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'password' => bcrypt($validated['password']),
-            'role_id'  => $request->role_id ?? 3, // Gán role_id mặc định nếu không có
-        ]);
+        $user = User::create($validated);
 
         return redirect()->route('users.index')->with('success', 'User created successfully!');
     }
@@ -59,7 +56,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $validated = $request->validated();
-
+        Log::info('Validated data:', $validated);
         // Bỏ qua email nếu không thay đổi
         if ($request->email === $user->email) {
             unset($validated['email']);
@@ -88,7 +85,7 @@ class UserController extends Controller
             return redirect()->route('users.index')->with('error', 'Admin users cannot be deleted.');
         }
 
-        $user->delete();
+        $user->delete(); // Soft delete
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }

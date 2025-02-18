@@ -28,6 +28,7 @@ return new class extends Migration
                   ->onDelete('set null');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

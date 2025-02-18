@@ -33,20 +33,26 @@ class HotelController extends Controller
     /**
      * Hiển thị danh sách khách sạn.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = auth()->user();
+        $query = Hotel::query();
 
-        if ($user->role_id == 1) {
-            $hotels = $this->hotelRepository->paginate(10, ['city']);
-        } else {
-            $hotels = $this->hotelRepository->getHotelsByUser($user->id, 10);
+        if ($request->has('city_id') && $request->city_id) {
+            $query->where('city_id', $request->city_id);
         }
 
-        return view('hotels.index', [
-            'hotels' => $hotels,
-            'cities' => City::all()
-        ]);
+        if ($request->has('hotel_name') && $request->hotel_name) {
+            $query->where('hotel_name', 'LIKE', "%{$request->hotel_name}%");
+        }
+
+        if ($request->has('hotel_code') && $request->hotel_code) {
+            $query->where('hotel_code', 'LIKE', "%{$request->hotel_code}%");
+        }
+
+        $hotels = $query->paginate(10);
+        $cities = City::all();
+
+        return view('hotels.index', compact('hotels', 'cities'));
     }
 
     /**
@@ -150,7 +156,7 @@ class HotelController extends Controller
             return redirect()->route('hotels.index')->with('error', 'Bạn không có quyền xóa khách sạn này.');
         }
 
-        $this->hotelRepository->delete($id);
+        $hotel->delete();
         return redirect()->route('hotels.index')->with('success', 'Khách sạn đã được xóa.');
     }
 }

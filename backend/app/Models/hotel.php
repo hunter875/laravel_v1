@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class hotel extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
     protected $table = 'hotels';
     protected $fillable = [
         'id',
@@ -24,6 +24,7 @@ class hotel extends Model
         'hotel_code',
         
     ];
+
     public function hotels()
     {
         return $this->hasMany(Hotel::class); // If the city has many hotels

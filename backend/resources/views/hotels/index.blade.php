@@ -7,30 +7,19 @@
     <h1>Hotel Management</h1>
 @stop
 
-
 @section('content')
     <div class="card">
         <div class="card-header">
-            <form method="GET" action="{{ route('hotels.index') }}">
-                <div class="row">
-                    <div class="col-md-3">
-                        <select class="form-control" name="cityId">
-                            <option value="">--Select City--</option>
-                            @foreach ($cities as $city)
-                                <option value="{{ $city->id }}" {{ request('cityId') == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" name="hotelCode" class="form-control" placeholder="Hotel Code" value="{{ request('hotelCode') }}">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" name="hotelName" class="form-control" placeholder="Hotel Name" value="{{ request('hotelName') }}">
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary">Search</button>
-                    </div>
-                </div>
+            <form method="GET" action="{{ route('hotels.index') }}" class="form-inline mb-3">
+                <select name="city_id" class="form-control mr-2">
+                    <option value="">Select City</option>
+                    @foreach($cities as $city)
+                        <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
+                    @endforeach
+                </select>
+                <input type="text" name="hotel_name" class="form-control mr-2" placeholder="Hotel Name" value="{{ request('hotel_name') }}">
+                <input type="text" name="hotel_code" class="form-control mr-2" placeholder="Hotel Code" value="{{ request('hotel_code') }}">
+                <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
 

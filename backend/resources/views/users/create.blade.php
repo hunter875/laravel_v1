@@ -32,12 +32,12 @@
                         </div>
                         <div class="form-group">
                             <label for="first_name">First Name</label>
-                            <input type="text" class="form-control" name="first_name" id="first_name" value="{{ old('first_name') }}" required>
+                            <input type="text" class="form-control" name="first_name" id="first_name" value="{{ old('first_name') }}"  required>
                             @error('first_name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                         <div class="form-group">
                             <label for="last_name">Last Name</label>
-                            <input type="text" class="form-control" name="last_name" id="last_name" value="{{ old('last_name') }}" required>
+                            <input type="text" class="form-control" name="last_name" id="last_name" value="{{ old('last_name') }}"  required>
                             @error('last_name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                         <div class="form-group">

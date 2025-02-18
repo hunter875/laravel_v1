@@ -23,6 +23,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('users', UserController::class);  
 Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
 Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+Route::put('/users/{user}', [UserController::class, 'update']);
 
 // Profile Routes
 Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');

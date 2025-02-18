@@ -2,12 +2,13 @@
     <label for="hotel_name">Hotel Name</label>
     <input type="text" class="form-control" name="hotel_name" id="hotel_name" value="{{ old('hotel_name', $hotel->hotel_name ?? '') }}" required>
 </div>
+
 <div class="form-group">
     <label for="hotel_code">Hotel Code</label>
     <input type="text" class="form-control" name="hotel_code" id="hotel_code" value="{{ old('hotel_code', $hotel->hotel_code ?? '') }}">
 <div class="form-group">
     <label for="address1">Address 1</label>
-    <input type="text" class="form-control" name="address1" id="address1" value="{{ old('address1', $hotel->address1 ?? '') }}" required>
+    <input type="text" class="form-control" name="address1" id="address1" value="{{ old('address1', $hotel->address1 ?? '') }}" >
 </div>
 <div class="form-group">
     <label for="address2">Address 2</label>

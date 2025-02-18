@@ -21,26 +21,36 @@
                     <form action="{{ route('users.update', $user->id) }}" method="POST">
                         @csrf
                         @method('PUT')
+                        
+                        <!-- Name Field -->
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" name="name" id="name" value="{{ old('name', $user->name) }}" required>
                             @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
+
+                        <!-- Email Field -->
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input type="email" class="form-control" name="email" id="email" value="{{ old('email', $user->email) }}" required>
                             @error('email') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
+
+                        <!-- First Name Field -->
                         <div class="form-group">
                             <label for="first_name">First Name</label>
                             <input type="text" class="form-control" name="first_name" id="first_name" value="{{ old('first_name', $user->first_name) }}" required>
                             @error('first_name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
+
+                        <!-- Last Name Field -->
                         <div class="form-group">
                             <label for="last_name">Last Name</label>
-                            <input type="text" class="form-control" name="last_name" id="last_name" value="{{ old('last_name', $user->last_name) }}" required>
+                            <input type="text" class="form-control" name="last_name" id="last_name" value="{{ old('last_name', $user->last_name) }}" required> 
                             @error('last_name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
+
+                        <!-- Role Field -->
                         <div class="form-group">
                             <label for="role_id">Role</label>
                             <select class="form-control" name="role_id" id="role_id">
@@ -49,11 +59,16 @@
                                 @endforeach
                             </select>
                         </div>
+
+                        <!-- Password Field -->
                         <div class="form-group">
                             <label for="password">Password</label>
                             <input type="password" name="password" class="form-control">
                             <small class="form-text text-muted">Leave blank to keep the current password.</small>
+                            @error('password') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
+
+                        <!-- Submit Button -->
                         <button type="submit" class="btn btn-primary">Update User</button>
                     </form>
                 </div>

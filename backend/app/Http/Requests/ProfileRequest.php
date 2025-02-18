@@ -4,11 +4,13 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Rules\ValidEmailExtension;
+use App\Rules\ValidPasswordExtension;
 
 class ProfileRequest extends FormRequest
 {
     /**
-     * Xác định xem người dùng có quyền thực hiện request này không.
+     * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
@@ -16,7 +18,7 @@ class ProfileRequest extends FormRequest
     }
 
     /**
-     * Lấy danh sách các quy tắc xác thực.
+     * Get the validation rules.
      */
     public function rules(): array
     {
@@ -25,42 +27,49 @@ class ProfileRequest extends FormRequest
             'email'      => [
                 'required', 
                 'email', 
-                Rule::unique('users', 'email')->ignore(auth()->id())
+                Rule::unique('users', 'email')->ignore(auth()->id()),
+                new     ValidEmailExtension(),
             ],
             'first_name' => ['nullable', 'string', 'max:255'],
             'last_name'  => ['nullable', 'string', 'max:255'],
-            'password'   => ['nullable', 'string', 'min:6'],
+            'password' => [
+                'required',
+                'string',
+                'min:8', // Ensure password has at least 8 characters
+               
+                new ValidPasswordExtension(),
+            ],
             'avatar'     => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            
         ];
     }
 
     /**
-     * Trả về thông báo lỗi tùy chỉnh.
+     * Return custom error messages.
      */
     public function messages(): array
     {
         return [
-            'name.required'       => 'Tên không được để trống.',
-            'name.string'         => 'Tên phải là một chuỗi ký tự hợp lệ.',
-            'name.max'            => 'Tên không được vượt quá :max ký tự.',
+            'name.required'       => 'Name cannot be empty.',
+            'name.string'         => 'Name must be a valid string.',
+            'name.max'            => 'Name cannot exceed :max characters.',
             
-            'email.required'      => 'Email không được để trống.',
-            'email.email'         => 'Email không đúng định dạng.',
-            'email.unique'        => 'Email đã tồn tại trong hệ thống.',
+            'email.required'      => 'Email cannot be empty.',
+            'email.email'         => 'Email is not in the correct format.',
+            'email.unique'        => 'Email already exists in the system.',
 
-            'first_name.string'   => 'Họ phải là một chuỗi ký tự hợp lệ.',
-            'first_name.max'      => 'Họ không được vượt quá :max ký tự.',
+            'first_name.string'   => 'First name must be a valid string.',
+            'first_name.max'      => 'First name cannot exceed :max characters.',
             
-            'last_name.string'    => 'Tên phải là một chuỗi ký tự hợp lệ.',
-            'last_name.max'       => 'Tên không được vượt quá :max ký tự.',
+            'last_name.string'    => 'Last name must be a valid string.',
+            'last_name.max'       => 'Last name cannot exceed :max characters.',
 
-            'password.string'     => 'Mật khẩu phải là một chuỗi ký tự hợp lệ.',
-            'password.min'        => 'Mật khẩu phải có ít nhất :min ký tự.',
+            'password.string'     => 'Password must be a valid string.',
+            'password.min'        => 'Password must be at least :min characters.',
+            'password.regex'      => 'Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.',
 
-            'avatar.image'        => 'Ảnh đại diện phải là một tệp hình ảnh.',
-            'avatar.mimes'        => 'Ảnh đại diện phải có định dạng: jpeg, png, jpg, gif.',
-            'avatar.max'          => 'Ảnh đại diện không được vượt quá :max KB.',
+            'avatar.image'        => 'Avatar must be an image file.',
+            'avatar.mimes'        => 'Avatar must be of type: jpeg, png, jpg, gif.',
+            'avatar.max'          => 'Avatar cannot exceed :max KB.',
         ];
     }
 }
