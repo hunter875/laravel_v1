@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\rules\ValidEmailExtension;
+use App\Rules\ValidEmailExtension;
 
 class HotelRequest extends FormRequest
 {

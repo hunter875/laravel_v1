@@ -18,10 +18,7 @@ class ProfileService {
     }
 
     public function updateProfile(array $data) {
-        $user = Auth::user();
-
-     
-        
+        $user = Auth::user();    
         if (isset($data['avatar']) && $data['avatar']->isValid()) {
             $avatarPath = $data['avatar']->store('avatars', 'public');
             $data['avatar'] = $avatarPath;

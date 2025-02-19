@@ -28,7 +28,7 @@ class ProfileRequest extends FormRequest
                 'required', 
                 'email', 
                 Rule::unique('users', 'email')->ignore(auth()->id()),
-                new     ValidEmailExtension(),
+                new ValidEmailExtension(),
             ],
             'first_name' => ['nullable', 'string', 'max:255'],
             'last_name'  => ['nullable', 'string', 'max:255'],
@@ -36,7 +36,6 @@ class ProfileRequest extends FormRequest
                 'required',
                 'string',
                 'min:8', // Ensure password has at least 8 characters
-               
                 new ValidPasswordExtension(),
             ],
             'avatar'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],

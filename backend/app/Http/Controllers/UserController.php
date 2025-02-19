@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
-use Illuminate\Http\Request;
+use App\Models\Hotel;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -15,6 +16,7 @@ class UserController extends Controller
     {
         $users = User::paginate(7);
         $roles = Role::all();
+        
         return view('users.index', compact('users', 'roles'));
     }
 
@@ -24,6 +26,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
+        
         return view('users.create', compact('roles'));
     }
 
@@ -34,29 +37,30 @@ class UserController extends Controller
     {
         $validated = $request->validated();
 
-        $user = User::create($validated);
+        User::create($validated);
 
-        return redirect()->route('users.index')->with('success', 'User created successfully!');
+        return redirect()->route('users.index')
+            ->with('success', 'User created successfully!');
     }
 
     /**
      * Hiển thị form chỉnh sửa người dùng.
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user  = User::findOrFail($id);
         $roles = Role::all();
+        
         return view('users.edit', compact('user', 'roles'));
     }
 
     /**
      * Cập nhật thông tin người dùng.
      */
-    public function update(UserRequest $request, $id)
+    public function update(UserRequest $request, User $user)
     {
-        $user = User::findOrFail($id);
         $validated = $request->validated();
-        Log::info('Validated data:', $validated);
+        Log::info('Validated data: ', $validated);
+
         // Bỏ qua email nếu không thay đổi
         if ($request->email === $user->email) {
             unset($validated['email']);
@@ -71,7 +75,8 @@ class UserController extends Controller
 
         $user->update($validated);
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully');
+        return redirect()->route('users.index')
+            ->with('success', 'User updated successfully');
     }
 
     /**
@@ -85,7 +90,23 @@ class UserController extends Controller
             return redirect()->route('users.index')->with('error', 'Admin users cannot be deleted.');
         }
 
+        // Check if the user has associated hotels
+        if (Hotel::where('user_id', $id)->exists()) {
+            return redirect()->route('users.index')->with('error', 'User cannot be deleted because they have associated hotels.');
+        }
+
         $user->delete(); // Soft delete
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function checkUserHotels(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        if ($user && $user->hotels()->exists()) {
+            return response()->json(['hasHotel' => true]);
+        }
+
+        return response()->json(['hasHotel' => false]);
     }
 }

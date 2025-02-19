@@ -32,7 +32,7 @@
 </div>
 <div class="form-group">
     <label for="FAX">FAX</label>
-    <input type="text" class="form-control" name="FAX" id="FAX" value="{{ old('FAX', $hotel->FAX ?? '') }}">
+    <input type="text" class="form-control" name="FAX" id="FAX" value="{{ old('fax', $hotel->fax ?? '') }}">
 </div>
 <div class="form-group">
     <label for="company_name">Company Name</label>

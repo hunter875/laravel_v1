@@ -33,5 +33,10 @@ class hotel extends Model
     {
         return $this->belongsTo(City::class); // If the hotel belongs to a city
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class); // If the hotel belongs to a user
+    }
+
 }
 

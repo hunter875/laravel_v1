@@ -13,6 +13,18 @@
 @section('content')
     <div class="row">
         <div class="col-12">
+            <!-- Display Success and Error Messages -->
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <!-- Search Form -->
             <div class="mb-3">
                 <form action="{{ route('users.index') }}" method="GET">

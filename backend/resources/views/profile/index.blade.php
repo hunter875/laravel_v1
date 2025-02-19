@@ -42,7 +42,7 @@
 
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" name="password" id="password" class="form-control" placeholder="Nếu muốn đổi mật khẩu hãy nhập vào">
+            <input type="password" name="password" id="password" class="form-control" placeholder="Leave blank to keep the current password">
         </div> @error('password') <small class="text-danger">{{ $message }}</small> @enderror
 
         <div class="form-group">
@@ -51,7 +51,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Save Changes</button>
-        <button type="button" class="btn btn-danger" id="deleteAccount">Xóa tài khoản</button>
+        <button type="button" class="btn btn-danger" id="deleteAccount">delete Account</button>
     </form>
 </div>
 @endsection
