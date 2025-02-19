@@ -31,6 +31,7 @@ class UserRequest extends FormRequest
                 'required',
                 'string',
                 'email',
+                'min:10',
                 'max:255',
                 Rule::unique('users', 'email')->ignore($userId),
                 new ValidEmailExtension(),

@@ -65,13 +65,9 @@
                                             </a>
 
                                             <!-- Delete Button -->
-                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-trash"></i> Delete
-                                                </button>
-                                            </form>
+                                            <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ $user->id }})" data-toggle="modal" data-target="#confirmDeleteModal">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -87,4 +83,36 @@
             </div>
         </div>
     </div>
+
+    <!-- Confirm Delete Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this user?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form id="delete-form" action="" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(userId) {
+            var form = document.getElementById('delete-form');
+            form.action = '/users/' + userId;
+        }
+    </script>
 @stop

@@ -13,6 +13,6 @@ class ValidPasswordExtension implements Rule
 
     public function message()
     {
-        return 'Mật khẩu phải chứa ít nhất 1 chữ cái viết thường, 1 chữ cái viết hoa, 1 số và 1 ký tự đặc biệt';
+        return 'The :attribute must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.';
     }
 }

@@ -16,7 +16,7 @@ class HotelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'hotel_code'   => ['required', 'string', 'max:50', Rule::unique('hotels', 'hotel_code')->ignore($this->route('hotel'))],
+            'hotel_code'   => ['required', 'string', 'max:255', Rule::unique('hotels', 'hotel_code')->ignore($this->route('hotel'))],
             'hotel_name'   => ['required', 'string', 'max:255', Rule::unique('hotels', 'hotel_name')->ignore($this->route('hotel'))],
             'address1'     => ['nullable', 'string', 'max:255'],
             'address2'     => ['nullable', 'string', 'max:255'],
@@ -25,7 +25,7 @@ class HotelRequest extends FormRequest
             'email'        => ['required', 'email', 'max:255', new ValidEmailExtension()],
             'fax'          => ['nullable', 'digits_between:10,11'],
             'company_name' => ['nullable', 'string', 'max:255'],
-            'tax_code'     => ['nullable', 'string', 'max:255'],
+            'tax_code'     => ['nullable', 'digits_between:10,11 ', 'max:11'],
         ];
     }
 

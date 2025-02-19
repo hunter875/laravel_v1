@@ -25,7 +25,7 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
 
-    /**
+    /**git
      * Register any events for your application.
      *
      * @return void
