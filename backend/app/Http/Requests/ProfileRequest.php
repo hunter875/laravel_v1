@@ -32,13 +32,13 @@ class ProfileRequest extends FormRequest
             ],
             'first_name' => ['nullable', 'string', 'max:255'],
             'last_name'  => ['nullable', 'string', 'max:255'],
-            'password' => [
-                'required',
+            'password'   => [
+                'nullable', // Make password optional
                 'string',
                 'min:8', // Ensure password has at least 8 characters
                 new ValidPasswordExtension(),
             ],
-            'avatar'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'avatar'     => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 

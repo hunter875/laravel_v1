@@ -24,11 +24,14 @@
             <label for="name">Name</label>
             <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $user->name) }}" required>
         </div>
-
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+            @error('email')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
+        
 
         <div class="form-group">
             <label for="first_name">First Name</label>
@@ -51,7 +54,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Save Changes</button>
-        <button type="button" class="btn btn-danger" id="deleteAccount">delete Account</button>
+        <button type="button" class="btn btn-danger" id="deleteAccount">Delete Account</button>
     </form>
 </div>
 @endsection
