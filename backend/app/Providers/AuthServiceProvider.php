@@ -6,6 +6,8 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use Illuminate\Support\Facades\Gate;
 use App\Policies\AdminPolicy; // Đảm bảo đúng namespace (Policies, không phải Polices)
 use App\Models\User;
+use App\Models\Profile;
+use App\Policies\ProfilePolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         User::class => AdminPolicy::class,
+        Profile::class => ProfilePolicy::class, // Register the ProfilePolicy
     ];
 
     /**
@@ -27,7 +30,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         
-        // Định nghĩa thêm các Gate nếu cần
-        Gate::define('AccessAdmin', [AdminPolicy::class, 'view']);
+        // Define a gate for admin access
+        Gate::define('access-admin', [AdminPolicy::class, 'accessAdmin']);
     }
 }

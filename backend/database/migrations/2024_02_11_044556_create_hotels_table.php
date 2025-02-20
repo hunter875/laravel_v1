@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('order_date');
             $table->string('email');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -4,14 +4,15 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Repositories\UserRepositoryInterface;
-use App\Common\Constant;
-use App\Models\Role;
+use Illuminate\Support\Facades\Log;
+
 class UserRepository implements UserRepositoryInterface
 {
     public function find($id)
     {
-        return User::findOrFail($id);
+        return User::find($id);
     }
+
     public function all()
     {
         return User::all();
@@ -20,31 +21,36 @@ class UserRepository implements UserRepositoryInterface
     public function create(array $data)
     {
         $data['password'] = bcrypt($data['password']);
-        $user = User::create($data);
-       
-        return $user;
+        return User::create($data);
     }
 
     public function update($id, array $data)
-    {
-        $user = User::findOrFail($id);
-        $user->update($data);
-
-        return $user->fresh();
+{
+    $user = User::find($id);
+    if ($user) {
+        return $user->update($data);
     }
-
+    return false;
+}
+    
+    
     public function delete($id)
     {
-        return User::destroy($id);
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            return true;
+        }
+        return false;
     }
 
-    public function searchByName($name)
+    public function paginate($perPage)
     {
-        return User::where('name', 'like', '%' . $name . '%');
+        return User::paginate($perPage);
     }
 
-    public function findEmail($email){
-        return User::where('email', '=', $email)->first();
+    public function getUserById($id)
+    {
+        return User::find($id);
     }
-
 }

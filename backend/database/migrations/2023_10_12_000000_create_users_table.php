@@ -20,19 +20,15 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
-
-            // Thêm cột role_id (loại unsignedBigInteger và cho phép null nếu cần)
+            $table->string('last_name')->nullable();         
             $table->unsignedBigInteger('role_id')->nullable();
-
-            // Sau đó, thêm ràng buộc khóa ngoại cho role_id
             $table->foreign('role_id')
                   ->references('id')
                   ->on('roles')
                   ->onDelete('set null');
-
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

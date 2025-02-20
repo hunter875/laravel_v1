@@ -5,35 +5,26 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\UserRepository;
-use App\Services\UserService;
-use App\Services\ProfileService;
+use App\Repositories\ProfileRepositoryInterface;
+use App\Repositories\ProfileRepository;
+use App\Repositories\RoleRepositoryInterface;
+use App\Repositories\RoleRepository;
+use App\Repositories\HotelRepositoryInterface;
+use App\Repositories\HotelRepository;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
     public function register()
     {
-        //Target [App\Repositories\UserRepositoryInterface] is not instantiable while building [App\Http\Controllers\UserController, App\Services\UserService].
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-        
-        $this->app->bind(UserService::class, UserService::class);
-
-        $this->app->bind(ProfileService::class, ProfileService::class);
-
-
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class); 
+        $this->app->bind(ProfileRepositoryInterface::class, ProfileRepository::class);
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
+        $this->app->bind(HotelRepositoryInterface::class, HotelRepository::class); // Bind HotelRepositoryInterface với HotelRepository
     }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
     public function boot()
     {
-        //
+        Paginator::defaultView('vendor.pagination.custom');
     }
 }
